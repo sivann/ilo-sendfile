@@ -17,7 +17,7 @@ It uploads an already  base64-encoded file slowly with rate-limiting allowing fo
 ```
 my_pc $ base64 file_to_be_uploaded.tgz > tosend #  base64 your file in a file named "tosend":
 my_pc $ ./sendfile-ilo.exp                      # run the script
-# Your file should be named "sent" on the server, decode it on the remote server prompt:
+# Your file should now be transefered and named "sent" on the server, decode it on the remote server prompt:
 my_server $ base64  -d sent > file_to_be_uploaded.tgz
 ```
 
