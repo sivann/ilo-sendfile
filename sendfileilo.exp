@@ -1,0 +1,51 @@
+#!/usr/bin/expect
+
+# Sivann 2016
+
+# Send a file via ILO. File must be named "tosend" and must be a base64 encoded file
+# It will appear as "myfile" on the server.
+
+eval spawn ssh -oStrictHostKeyChecking=no -oCheckHostIP=no Administrator@vserver-dev-3-ilo
+#use correct prompt
+set prompt ":|#|\\\$"
+interact -o -nobuffer -re $prompt return
+
+#REPLACE BELO WITH ILO PASSWORD:
+send "ILO_PASSWORD\r"
+expect "</>hpiLO-> "
+send "vsp\r"
+expect "login: "
+send "root\r"
+expect "assword: "
+
+#REPLACE BELOW WITH YOUR ROOT PASSWORD:
+send "ROOT_PASSWORD\r"
+sleep 1
+#expect "$"
+expect "#"
+sleep 0.3
+
+send_error "echo  'SENDING FILE, WAIT'\r"
+exp_send "cat > myfile << EOF\r"
+sleep 0.5
+
+set fn [open "tosend" r]
+
+
+while {[gets $fn buf] != -1} {
+    if {[scan $buf "domain %s" name] == 1} {
+        close $fn
+    }
+    exp_send "$buf\n"
+    sleep 0.03
+}
+
+exp_send "\r"
+exp_send "EOF\r"
+exp_send "\r"
+exp_send "\r"
+
+
+send_error "echo  'FILE SENT'\r"
+
+interact
